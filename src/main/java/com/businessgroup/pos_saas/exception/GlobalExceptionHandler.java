@@ -1,38 +1,41 @@
 package com.businessgroup.pos_saas.exception;
 
+import com.businessgroup.pos_saas.dto.ApiError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.stream.Collectors;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleValidationErrors(MethodArgumentNotValidException ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("timestamp", LocalDateTime.now());
-        response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("error", "Validación fallida");
-
-        // Mapeamos los errores de cada campo
-        Map<String, String> errores = ex.getBindingResult()
+    public ResponseEntity<ApiError> manejarErroresValidacion(MethodArgumentNotValidException ex) {
+        List<String> errores = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .collect(Collectors.toMap(
-                        field -> field.getField(),
-                        field -> field.getDefaultMessage(),
-                        (msg1, msg2) -> msg1 + "; " + msg2));
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.toList());
 
-        response.put("mensajes", errores);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                "Errores de validación",
+                errores);
+
+        return ResponseEntity.badRequest().body(apiError);
     }
 
-    // Aquí podrías agregar otros tipos de errores si lo deseas
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> manejarErroresGenerales(Exception ex) {
+        ApiError apiError = new ApiError(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Error interno del servidor",
+                List.of(ex.getMessage()));
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
+    }
 }
