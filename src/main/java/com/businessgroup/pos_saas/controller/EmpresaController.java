@@ -1,6 +1,7 @@
 package com.businessgroup.pos_saas.controller;
 
 import com.businessgroup.pos_saas.dto.ApiResponse;
+import com.businessgroup.pos_saas.dto.EmpresaDTO;
 import com.businessgroup.pos_saas.model.Empresa;
 import com.businessgroup.pos_saas.service.EmpresaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,13 @@ public class EmpresaController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Empresa>> crear(@Valid @RequestBody Empresa empresa) {
+    public ResponseEntity<ApiResponse<Empresa>> crear(@Valid @RequestBody EmpresaDTO empresaDTO) {
+        Empresa empresa = new Empresa();
+        empresa.setNombre(empresaDTO.getNombre().toUpperCase());
+        empresa.setNit(empresaDTO.getNit());
+        empresa.setDireccion(empresaDTO.getDireccion().toUpperCase());
+        empresa.setTelefono(empresaDTO.getTelefono());
+
         Empresa guardada = empresaService.guardar(empresa);
         return ResponseEntity.status(201).body(new ApiResponse<>(201, "Empresa creada exitosamente", guardada));
     }
