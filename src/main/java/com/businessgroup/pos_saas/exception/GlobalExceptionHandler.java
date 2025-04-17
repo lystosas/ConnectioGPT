@@ -1,6 +1,8 @@
 package com.businessgroup.pos_saas.exception;
 
 import com.businessgroup.pos_saas.dto.ApiError;
+import com.businessgroup.pos_saas.dto.ApiResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -37,5 +39,11 @@ public class GlobalExceptionHandler {
                 List.of(ex.getMessage()));
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Void>> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponse<>(400, ex.getMessage(), null));
     }
 }

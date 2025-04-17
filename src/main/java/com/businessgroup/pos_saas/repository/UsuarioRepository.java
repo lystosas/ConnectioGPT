@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.businessgroup.pos_saas.model.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, UUID> {
-    boolean existsByCorreo(String correo);
+    Usuario findByCorreo(String correo);
 }
