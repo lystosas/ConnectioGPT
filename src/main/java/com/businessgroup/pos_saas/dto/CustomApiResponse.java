@@ -7,14 +7,14 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-public class ApiResponse<T> {
+public class CustomApiResponse<T> {
     private int status;
     private String message;
     private LocalDateTime timestamp = LocalDateTime.now();
     private T data;
 
     // Constructor sin necesidad de pasar timestamp
-    public ApiResponse(int status, String message, T data) {
+    public CustomApiResponse(int status, String message, T data) {
         this.status = status;
         this.message = message;
         this.timestamp = LocalDateTime.now();

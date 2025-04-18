@@ -4,6 +4,10 @@ import com.businessgroup.pos_saas.dto.EmpresaRequestDTO;
 import com.businessgroup.pos_saas.dto.EmpresaResponseDTO;
 import com.businessgroup.pos_saas.model.Empresa;
 import com.businessgroup.pos_saas.repository.EmpresaRepository;
+import com.businessgroup.pos_saas.repository.UsuarioRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +21,9 @@ public class EmpresaService {
 
     @Autowired
     private EmpresaRepository empresaRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     public EmpresaResponseDTO guardar(EmpresaRequestDTO dto) {
         Empresa empresa = new Empresa();
@@ -57,6 +64,35 @@ public class EmpresaService {
     }
 
     public void eliminar(UUID id) {
-        empresaRepository.deleteById(id);
+        Empresa empresa = empresaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Empresa no encontrada"));
+
+        boolean tieneUsuarios = usuarioRepository.existsByEmpresaId(id);
+
+        if (tieneUsuarios) {
+            throw new IllegalStateException("No se puede eliminar la empresa porque tiene usuarios asociados");
+        }
+
+        empresaRepository.delete(empresa);
     }
+
+    public EmpresaResponseDTO actualizar(UUID id, EmpresaRequestDTO dto) {
+        Empresa empresa = empresaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+
+        empresa.setNombre(dto.getNombre().toUpperCase());
+        empresa.setNit(dto.getNit().toUpperCase());
+        empresa.setDireccion(dto.getDireccion().toUpperCase());
+        empresa.setTelefono(dto.getTelefono().toUpperCase());
+
+        Empresa actualizada = empresaRepository.save(empresa);
+
+        return new EmpresaResponseDTO(
+                actualizada.getId(),
+                actualizada.getNombre(),
+                actualizada.getNit(),
+                actualizada.getDireccion(),
+                actualizada.getTelefono());
+    }
+
 }

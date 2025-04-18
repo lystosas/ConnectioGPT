@@ -1,7 +1,7 @@
 package com.businessgroup.pos_saas.exception;
 
 import com.businessgroup.pos_saas.dto.ApiError;
-import com.businessgroup.pos_saas.dto.ApiResponse;
+import com.businessgroup.pos_saas.dto.CustomApiResponse;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,8 +42,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<Void>> handleIllegalArgument(IllegalArgumentException ex) {
+    public ResponseEntity<CustomApiResponse<Void>> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ApiResponse<>(400, ex.getMessage(), null));
+                .body(new CustomApiResponse<>(400, ex.getMessage(), null));
     }
 }

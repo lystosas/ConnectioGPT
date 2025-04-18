@@ -1,23 +1,31 @@
-# POS-SaaS - Sistema de Punto de Venta en la Nube
+POS-SaaS - Sistema de Punto de Venta en la Nube
+Actualizado: 2025-04-18
+Versión actual: 1.0.0
 
-Este proyecto es un sistema POS SaaS (Software as a Service) desarrollado en Spring Boot 3.2.5, con soporte para múltiples negocios y funcionalidades como autenticación, seguridad, manejo de inventario, ventas y reportes.
+Este proyecto es un sistema POS SaaS (Software as a Service) desarrollado en Spring Boot 3.2.5. Ofrece soporte para múltiples negocios y funcionalidades avanzadas como autenticación segura con JWT, manejo de empresas y usuarios, protección de endpoints y documentación con Swagger.
 
-## 🚀 Tecnologías
+🚀 Tecnologías
+Java 17
 
-- Java 17
-- Spring Boot 3.2.5
-- Spring Security
-- Spring Data JPA
-- PostgreSQL
-- Lombok
-- Swagger UI (springdoc-openapi)
-- Maven
+Spring Boot 3.2.5
 
----
+Spring Security + JWT
 
-## 📦 Dependencias principales
+Spring Data JPA
 
-```xml
+PostgreSQL
+
+Lombok
+
+Swagger UI (springdoc-openapi)
+
+Maven
+
+📦 Dependencias principales
+xml
+Copiar
+Editar
+
 <!-- Swagger UI compatible con Spring Boot 3.2+ -->
 <dependency>
   <groupId>org.springdoc</groupId>
@@ -32,17 +40,11 @@ Este proyecto es un sistema POS SaaS (Software as a Service) desarrollado en Spr
   <version>1.18.30</version>
   <scope>provided</scope>
 </dependency>
-```
-
----
-
-## ⚙️ Configuración de Build
-
-### 🔧 `maven-compiler-plugin`
-
-Es importante incluir la versión de Lombok en `annotationProcessorPaths` para evitar errores de compilación:
-
-```xml
+⚙️ Configuración de Build
+🔧 maven-compiler-plugin
+xml
+Copiar
+Editar
 <plugin>
   <groupId>org.apache.maven.plugins</groupId>
   <artifactId>maven-compiler-plugin</artifactId>
@@ -57,13 +59,10 @@ Es importante incluir la versión de Lombok en `annotationProcessorPaths` para e
     </annotationProcessorPaths>
   </configuration>
 </plugin>
-```
-
-### 🔧 `spring-boot-maven-plugin`
-
-Excluye Lombok para evitar que se empaquete en el JAR final:
-
-```xml
+🔧 spring-boot-maven-plugin
+xml
+Copiar
+Editar
 <plugin>
   <groupId>org.springframework.boot</groupId>
   <artifactId>spring-boot-maven-plugin</artifactId>
@@ -76,50 +75,77 @@ Excluye Lombok para evitar que se empaquete en el JAR final:
     </excludes>
   </configuration>
 </plugin>
-```
+🧠 Funcionalidades clave
+🔐 Seguridad y autenticación
+Autenticación con correo y clave
 
----
+Generación y validación de JWT
 
-## 📄 Acceso a Swagger UI
+Protección de endpoints con @SecurityRequirement y @PreAuthorize
 
-Una vez que la aplicación esté corriendo, accede a la documentación Swagger en:
+Swagger soporta login con Bearer token
 
-```
+🏢 Módulo Empresa
+Crear, listar, actualizar, eliminar empresas
+
+Validaciones personalizadas (nombre, NIT, dirección, teléfono)
+
+Respuesta con CustomApiResponse<T>
+
+Impide eliminación si tiene usuarios asociados
+
+Todo se guarda en mayúsculas
+
+👤 Módulo Usuario
+Crear, listar, actualizar, eliminar usuarios
+
+Cambio de empresa con endpoint PATCH /api/usuarios/{id}/empresa/{empresaId}
+
+Evita actualizar la clave si no se incluye
+
+Valida existencia de empresa antes de guardar
+
+DTOs profesionales para entrada/salida
+
+🔐 Swagger UI + JWT
+Hacer login en /auth/login
+
+Copiar token JWT
+
+Usar botón "Authorize" en Swagger:
+Pegar el token como Bearer TU_TOKEN
+
+🔧 Variables de entorno
+env
+Copiar
+Editar
+JWT_SECRET=clave-super-segura-de-32+caracteres
+📄 Documentación
+Swagger UI:
+
+bash
+Copiar
+Editar
 http://localhost:8080/swagger-ui/index.html
-```
+Documentación JSON:
 
-El endpoint por defecto de la documentación de la API es:
-
-```
+bash
+Copiar
+Editar
 /v3/api-docs
-```
-
----
-
-## 🧪 Ejecución
-
-Para compilar el proyecto:
-
-```bash
+🧪 Ejecución
+bash
+Copiar
+Editar
 mvn clean install
-```
-
-Para ejecutar la aplicación:
-
-```bash
 mvn spring-boot:run
-```
+🧰 Notas adicionales
+Asegúrate de usar una clave JWT de al menos 32 caracteres.
 
----
+Todos los campos de texto se almacenan en mayúsculas por defecto.
 
-## 🧰 Notas adicionales
+Las respuestas siguen un formato profesional y consistente con estructura { status, message, timestamp, data }.
 
-- Si llegas a ver errores como `NoSuchMethodError` relacionados con `ControllerAdviceBean`, asegúrate de usar versiones compatibles entre Spring Boot y springdoc-openapi.
-- Lombok debe estar correctamente configurado como `provided` y también como `annotationProcessor` en Maven.
-
----
-
-## 🧑‍💻 Autor
-
-**Business Group D&J SAS**  
-_Soluciones tecnológicas a tu alcance_
+🧑‍💻 Autor
+Business Group D&J SAS
+Soluciones tecnológicas a tu alcance

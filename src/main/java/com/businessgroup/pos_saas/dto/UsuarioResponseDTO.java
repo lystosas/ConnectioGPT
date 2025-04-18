@@ -15,4 +15,5 @@ public class UsuarioResponseDTO {
     private String nombre;
     private String correo;
     private String empresaNombre;
+    private UUID empresaId;
 }
